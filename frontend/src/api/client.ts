@@ -11,7 +11,7 @@ export type ApiError = {
 
 export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: ApiError }
 
-async function get<T>(path: string): Promise<ApiResult<T>> {
+const get = async <T>(path: string): Promise<ApiResult<T>> => {
   let response: Response
   try {
     response = await fetch(`${BASE_URL}${path}`, {
@@ -43,6 +43,4 @@ async function get<T>(path: string): Promise<ApiResult<T>> {
 
 export type Health = { status: string }
 
-export function fetchHealth(): Promise<ApiResult<Health>> {
-  return get<Health>('/api/health/')
-}
+export const fetchHealth = (): Promise<ApiResult<Health>> => get<Health>('/api/health/')

@@ -7,7 +7,7 @@ type Connection = 'checking' | 'connected' | 'unavailable'
  * Placeholder shell for the triage journey. For now it only confirms that the
  * React app can reach the Django API; the journey itself is a later ticket.
  */
-export default function App() {
+const App = () => {
   const [connection, setConnection] = useState<Connection>('checking')
 
   useEffect(() => {
@@ -36,3 +36,5 @@ export default function App() {
     </main>
   )
 }
+
+export default App
