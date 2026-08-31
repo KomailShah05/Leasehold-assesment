@@ -1,0 +1,24 @@
+/* Deliberately plain: no CSS framework, so the styles stay small and the
+   focus and contrast behaviour is ours to control. Real styling lands with
+   the accessibility ticket. */
+:root {
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+  color: #1a1a1a;
+  background-color: #ffffff;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+:focus-visible {
+  outline: 3px solid #0b5cab;
+  outline-offset: 2px;
+}
