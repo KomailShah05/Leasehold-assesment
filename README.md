@@ -8,8 +8,8 @@ including scope, ordered tickets, risks and deliberate exclusions.
 
 ## Current state
 
-All eight tickets. The journey works end to end, handles being got wrong, has been checked
-against WCAG 2.2 AA, and is covered by 68 tests.
+All eight tickets, plus the Part 3 hardening pass. The journey works end to end, handles being
+got wrong, has been checked against WCAG 2.2 AA, and is covered by 71 tests.
 
 ## What is here
 
@@ -255,7 +255,7 @@ tree and computed styles. A genuine VoiceOver or NVDA pass is the next thing I w
 
 ## Tests
 
-54 backend, 14 frontend.
+57 backend, 14 frontend.
 
 **The highest-risk behaviour is the fallback failing to fire**, because a confidently wrong route
 sends someone who is already worried down a path that does not fit their problem. So the tests

@@ -2,6 +2,7 @@ import ErrorAlert from './components/ErrorAlert'
 import QuestionStep from './components/QuestionStep'
 import ResultStep from './components/ResultStep'
 import ScenarioStep from './components/ScenarioStep'
+import { useDocumentTitle } from './hooks/useDocumentTitle'
 import { useTriage } from './hooks/useTriage'
 
 /**
@@ -11,6 +12,18 @@ import { useTriage } from './hooks/useTriage'
 const App = () => {
   const { routes, result, error, busy, canRetry, restartCount, start, answer, retry, restart } =
     useTriage()
+
+  // The content changes without the URL changing, so the title has to be kept
+  // in step by hand.
+  useDocumentTitle(
+    result?.status === 'question'
+      ? result.question.text
+      : result?.status === 'outcome'
+        ? result.guidance.title
+        : result?.status === 'fallback'
+          ? result.title
+          : null,
+  )
 
   return (
     <main>

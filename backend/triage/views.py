@@ -10,6 +10,7 @@ on that one field rather than checking whether other fields happen to be null.
 
 import json
 
+from django.core.exceptions import RequestDataTooBig
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
@@ -88,6 +89,11 @@ def routes(request: HttpRequest) -> HttpResponse:
 def triage(request: HttpRequest) -> HttpResponse:
     try:
         payload = json.loads(request.body)
+    except RequestDataTooBig:
+        # Reading an over-sized body otherwise escapes as Django's own HTML
+        # error page, which is the wrong shape for the client and, in debug,
+        # carries internal detail. Answer in our own format instead.
+        return _error("Please describe the problem in a little less detail.")
     except (json.JSONDecodeError, UnicodeDecodeError):
         return _error("We could not read that request.")
 

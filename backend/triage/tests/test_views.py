@@ -174,3 +174,47 @@ def test_every_unsure_page_still_offers_a_person(client: Client, guidance: None)
                 continue
             page = GuidancePage.objects.get(guidance_key=answer.guidance_key)
             assert "adviser" in page.summary.lower(), f"{route.id} overview drops the adviser"
+
+
+def test_an_over_sized_body_is_refused_in_our_own_format(client: Client, guidance: None) -> None:
+    """Django's own limit otherwise escapes as an HTML error page, which the
+    client cannot read and which carries internal detail while debugging."""
+    response = client.post(
+        reverse("triage"),
+        data=json.dumps({"description": "a" * 5_000_000}),
+        content_type="application/json",
+    )
+
+    assert response.status_code == 400
+    assert response["Content-Type"].startswith("application/json")
+    assert json.loads(response.content)["status"] == "error"
+
+
+def test_what_someone_types_is_never_echoed_back(client: Client, guidance: None) -> None:
+    """Nothing a person writes should reach the response.
+
+    Everything shown to them comes from editor-written guidance, so free text
+    has no route back to the screen. This holds that closed: if a future change
+    reflected input, it would become the first place markup could be injected.
+    """
+    typed = "<script>alert('x')</script> my service charge bill has gone up"
+
+    response = client.post(
+        reverse("triage"),
+        data=json.dumps({"description": typed}),
+        content_type="application/json",
+    )
+    body = response.content.decode()
+
+    assert "<script>" not in body
+    assert "alert(" not in body
+
+
+def test_free_text_is_not_stored_anywhere(client: Client, guidance: None) -> None:
+    """The prototype promises not to keep what people write. Nothing in the
+    triage path creates a row, so the page count is the same afterwards."""
+    before = GuidancePage.objects.count()
+
+    post(client, description="the roof leaks and I live at 12 Example Street")
+
+    assert GuidancePage.objects.count() == before

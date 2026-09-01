@@ -68,7 +68,7 @@ reads, or making product decisions on my behalf.
 
 Verification was done by running things, not by assertion:
 
-- **68 tests**, 54 backend and 14 frontend, all passing.
+- **71 tests**, 57 backend and 14 frontend, all passing.
 - **The tests were checked against deliberately broken code.** Reintroducing the escape-hatch bug
   failed one test; removing the ambiguity guard failed two. A test that cannot fail is decoration.
 - **Contrast and target sizes were measured** on the rendered page, not judged by eye. That is how
