@@ -8,8 +8,9 @@ including scope, ordered tickets, risks and deliberate exclusions.
 
 ## Current state
 
-Tickets 1 to 3. The routes, the sample guidance content and the triage API exist and are
-working. The React user journey is not built yet, so the API is currently exercised with curl.
+Tickets 1 to 5. The journey works end to end and handles being got wrong: validation, a service
+that is down, and starting over. Focus management, the accessibility audit and tests are still to
+come.
 
 ## What is here
 
@@ -126,6 +127,55 @@ who is already stressed.
 
 Also fallback, not an error: an unknown scenario, and an outcome whose guidance page is missing or
 unpublished. Someone seeing the fallback is already having a bad day; a 500 would not help.
+
+## The journey
+
+Three steps. `useTriage` holds all the state and every API call, so `App.tsx` only decides which
+step belongs on screen and the components do nothing but render what they are given.
+
+The steps are composed from small pieces rather than repeating markup: `RadioGroup` is used by
+both question screens, so hit areas, label wiring and error handling cannot drift apart between
+them, and `FieldError`, `ErrorAlert`, `GuidanceCard`, `DescriptionField` and `SubmitButton` each
+do one thing. The largest file in the frontend is 100 lines.
+
+**Choosing a scenario.** Radio buttons in a `fieldset`, not a dropdown, because a dropdown hides
+its options until you work out you have to open it. "I am not sure" is the fourth radio in the
+same group rather than a link off to one side, so it costs no more effort than the other three.
+The legal phrase sits *inside* each label in smaller text, so a screen reader announces it along
+with the plain wording instead of it being visual-only.
+
+**The follow-up question.** When the route was inferred from someone's own words we say so
+plainly — "this looks like it may be about…" — rather than presenting the guess as fact, and the
+answer list carries the option that tells us we were wrong.
+
+**The result.** Outcomes and fallbacks are framed identically: a possible next step, a link to the
+authoritative LEASE page, and a line saying this is not legal advice. "Start again" clears
+everything.
+
+Nothing is written to storage. What someone types is used for the request and then forgotten.
+
+## When things go wrong
+
+**Validation happens in the browser first.** An empty form is answered immediately and never
+becomes a request. The message names what to do — "Choose one of the options, or describe the
+problem in your own words" — rather than reporting that something is invalid. Errors clear as soon
+as the person acts, so the page stops telling them off once they have fixed it. The server still
+validates everything independently; the client check is for speed of feedback, not for safety.
+
+**Errors are not signalled by colour alone.** Each one is bold, worded plainly, and sits directly
+above the control it is about, linked with `aria-describedby` and marked `aria-invalid`.
+
+**A failing service gets a retry, not a dead end.** API errors appear in a `role="alert"` region
+with a "Try again" button that resends the last attempt, so a dropped connection does not cost
+someone their description. Retry is offered only for failures that might pass on a second attempt:
+a validation error is about what was entered, so retrying it unchanged would just fail again.
+
+**Requests time out after ten seconds.** `fetch` has no timeout of its own, so without this a
+stalled request leaves someone watching a "Checking…" button indefinitely. Ten seconds is long
+enough for a slow connection and short enough to admit defeat while they are still paying
+attention.
+
+**Starting again clears everything** — the result, the errors and the retained request.
 
 ## Decisions worth knowing
 
