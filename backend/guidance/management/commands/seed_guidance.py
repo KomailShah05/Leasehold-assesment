@@ -10,10 +10,11 @@ from wagtail.models import Page
 
 from guidance.models import GuidancePage
 
-# Placeholder until an editor sets the specific page. Pointing every route at
-# the advice guide index is honest about being a prototype; inventing deep
-# links we have not verified would risk sending someone to a 404.
-LEASE_ADVICE_GUIDE = "https://www.lease-advice.org/advice-guide/"
+# Placeholder until an editor sets the specific page. The site blocks automated
+# requests, so no deep path could be verified from here, and an unverified deep
+# link risks sending someone to a 404 at the worst moment. The home page is the
+# one URL certain to resolve; editors replace it per page in Wagtail.
+LEASE_ADVICE_HOME = "https://www.lease-advice.org/"
 
 SAMPLE_GUIDANCE = [
     {
@@ -113,7 +114,7 @@ class Command(BaseCommand):
                 slug=entry["guidance_key"],
                 guidance_key=entry["guidance_key"],
                 summary=entry["summary"],
-                lease_url=LEASE_ADVICE_GUIDE,
+                lease_url=LEASE_ADVICE_HOME,
             )
             parent.add_child(instance=page)
             page.save_revision().publish()
