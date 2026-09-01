@@ -6,11 +6,17 @@ It helps someone with a leasehold question describe their situation or choose a 
 then guides them to a relevant next step in plain English. It provides signposting only, not legal
 advice.
 
-|                              |                                                    |
-| ---------------------------- | -------------------------------------------------- |
-| [Plan](docs/PLAN.md)         | Scope, assumptions, tasks and risks                |
-| [Review](docs/REVIEW.md)     | Hardening, accessibility, security and self-review |
-| [AI usage](docs/AI-USAGE.md) | How AI was used and what was verified              |
+## Where to find each part
+
+| Part | Document | Contains |
+| --- | --- | --- |
+| **Part 1 — Plan** | [docs/PART-1-PLAN.md](docs/PART-1-PLAN.md) | Problem restatement, assumptions, ordered tickets, risks |
+| **Part 2 — Build** | This repository | `backend/` and `frontend/`, plus the Git history below |
+| **Part 3 — Harden & review** | [docs/PART-3-REVIEW.md](docs/PART-3-REVIEW.md) | Hardening pass, personal data and security, accessibility, self code review |
+| **AI usage note** | [docs/AI-USAGE.md](docs/AI-USAGE.md) | What helped, what I rejected or changed, what I verified |
+
+The commit history follows the same order: planning, then one ticket per commit, then the hardening
+pass committed separately (`git log --oneline`).
 
 ## What it does
 
@@ -103,8 +109,8 @@ This is a prototype, not a production advice service. It does not include authen
 enquiries, analytics, deployment infrastructure, or a full CMS.
 
 The original plan started with three topics and grew to six during development. The longer first
-screen is a known trade-off and is documented in the review.
+screen is a known trade-off and is documented in [Part 3](docs/PART-3-REVIEW.md).
 
-See [docs/REVIEW.md](docs/REVIEW.md) for known gaps and what I would improve next.
+See [docs/PART-3-REVIEW.md](docs/PART-3-REVIEW.md) for known gaps and what I would improve next.
 
 **Komail Shah — 1 September 2026**
