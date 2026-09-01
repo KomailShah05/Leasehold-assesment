@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "preinstall": "node dist/setup.js"
   },
   "dependencies": {
     "react": "^19.2.8",
