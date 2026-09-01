@@ -8,8 +8,8 @@ including scope, ordered tickets, risks and deliberate exclusions.
 
 ## Current state
 
-Ticket 1 (project setup) only. The app boots, the React frontend can reach the Django API, and
-the tooling is wired up. The triage journey itself is not built yet.
+Tickets 1 and 2. The app boots, the React frontend can reach the Django API, and the routes and
+sample guidance content exist. The triage API and the user journey are not built yet.
 
 ## What is here
 
@@ -33,6 +33,7 @@ source .venv/bin/activate
 pip install -r requirements-dev.txt
 export DJANGO_SETTINGS_MODULE=config.settings.dev
 python manage.py migrate
+python manage.py seed_guidance
 python manage.py runserver
 ```
 
@@ -62,6 +63,31 @@ cd frontend && npm run build && npm run lint
 
 Tests arrive with ticket 7; `pytest` is installed and configured but there is nothing to run yet.
 
+## The content
+
+Three routes — service charges, lease extensions, repairs — plus a fallback for anything else.
+
+`backend/triage/content.py` holds **routing only**: the scenarios, the one follow-up question
+each asks, and which `guidance_key` each answer points at. It is plain frozen dataclasses with no
+Django imports, so the taxonomy reads top to bottom in one sitting and can be tested without
+booting Django.
+
+`guidance.GuidancePage` holds **the words**, in Wagtail, so LEASE editors own them.
+`python manage.py seed_guidance` creates the eight sample pages and is safe to re-run.
+
+Two things about that content:
+
+- **It is not LEASE's published wording.** Every summary is original placeholder text written for
+  this exercise, phrased as a *possible next step* rather than advice. Each page carries a
+  `lease_url` so the app links out and the authoritative guidance stays LEASE's.
+- **`lease_url` is currently the advice guide index**, not a deep link. lease-advice.org blocks
+  automated requests, so I could not verify specific page URLs; guessing at them would risk
+  sending a stressed person to a 404. It is an editor-managed field, which is where that decision
+  belongs anyway.
+
+Every "I'm not sure" answer routes to the adviser page rather than to a best guess. Guessing at
+someone's situation is worse than handing them to a person.
+
 ## Decisions worth knowing
 
 - **Two runtime frontend dependencies**, `react` and `react-dom`. No router, no data-fetching
@@ -74,6 +100,11 @@ Tests arrive with ticket 7; `pytest` is installed and configured but there is no
 - **Secrets come from the environment.** Development has a throwaway key; the production settings
   read `DJANGO_SECRET_KEY` with no fallback, so a missing key stops the deploy instead of starting
   the site with a guessable secret.
+- **Django owns routing, Wagtail owns wording.** The triage rules never contain guidance prose;
+  they produce a `guidance_key` that resolves to an editor-owned page. So the words someone
+  finally reads have been through an editor, not through a developer or a language model.
+- **Guidance summaries are plain text, not rich text.** React renders them as text, so there is no
+  path from editor content to markup in the browser.
 - **The Wagtail scaffold was pruned.** The generated `search` app, welcome page and demo assets
   were deleted, because React owns the user-facing journey and Wagtail is only there to hold
   guidance content for editors.
