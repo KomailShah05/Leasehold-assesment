@@ -161,6 +161,7 @@ REPAIRS = Route(
         "mould",
         "leak",
         "leaking",
+        "water",
         "roof",
         "window",
         "heating",

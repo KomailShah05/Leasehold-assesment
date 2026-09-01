@@ -12,6 +12,8 @@ That is what keeps "we signpost, we do not advise" true no matter what is
 plugged in here.
 """
 
+import re
+from functools import cache
 from typing import Protocol
 
 from triage.content import ROUTES, Route
@@ -41,6 +43,23 @@ def normalise(text: str) -> str:
     return " ".join(text.lower().split())
 
 
+@cache
+def _pattern(keyword: str) -> re.Pattern[str]:
+    """Match a keyword as whole words, allowing a plural.
+
+    Plain substring matching was too loose: "bill" matched inside "billing",
+    which is a different subject. Requiring word boundaries fixes that, but
+    boundaries alone are too strict: people write "charges" and "they charged
+    me", not the dictionary form. Allowing a plural or a past tense keeps those
+    and still refuses "billing".
+    """
+    return re.compile(rf"\b{re.escape(keyword)}(?:s|es|d|ed)?\b")
+
+
+def matches(keyword: str, normalised_text: str) -> bool:
+    return _pattern(keyword).search(normalised_text) is not None
+
+
 def score_route(text: str, route: Route) -> int:
     """How strongly a description points at one route.
 
@@ -49,7 +68,7 @@ def score_route(text: str, route: Route) -> int:
     person using this service will write the word "lease" at some point.
     """
     normalised = normalise(text)
-    return sum(len(keyword.split()) for keyword in route.keywords if keyword in normalised)
+    return sum(len(keyword.split()) for keyword in route.keywords if matches(keyword, normalised))
 
 
 class KeywordClassifier:

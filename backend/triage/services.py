@@ -38,15 +38,6 @@ REJECT_ROUTE_ANSWER = Answer(
     guidance_key=ADVISER_GUIDANCE_KEY,
 )
 
-# Free text has to clear this before we will name a route at all. One bare
-# keyword ("bill") is a coincidence; we want a little more than that.
-MINIMUM_SCORE = 2
-
-# How far ahead the best route must be before we treat it as the answer. A tie,
-# or a near tie, means the words genuinely fit two topics, and picking one would
-# be a guess wearing a confident face.
-MINIMUM_LEAD = 2
-
 
 @dataclass(frozen=True)
 class RouteMatch:

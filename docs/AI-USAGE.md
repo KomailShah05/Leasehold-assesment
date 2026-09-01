@@ -15,8 +15,10 @@ reads, or making product decisions on my behalf.
 
 ## What it genuinely helped with
 
-- **Drafting code to a decided design.** The triage rules, the API layer, the React components and
-  the tests were AI-drafted against decisions I had already made in `PLAN.md`.
+- **Drafting code to a decided design.** I defined the architecture and the acceptance criteria for
+  each ticket, then used Claude as a coding pair to implement against them. The triage rules, the
+  API layer, the React components and the tests were drafted that way and reviewed, changed and
+  committed by me one ticket at a time.
 - **Finding bugs by exercising the code rather than reading it.** Three real defects surfaced this
   way, each of which would have survived a code review:
   - The escape-hatch answer ("this is not what my problem is about") returned an outcome still
@@ -88,5 +90,6 @@ Stated plainly rather than left to be assumed:
 - **No real screen reader pass.** Accessibility was checked against the accessibility tree and
   computed styles, not with VoiceOver or NVDA. This is the first thing I would do next.
 - **The end-to-end journey test runs in jsdom, not a browser.** The real browser checks were manual.
-- **Outbound LEASE URLs have not been opened by me from this environment**, because the site returns
-  403 to automated requests. They were supplied by hand and are correct as far as I can confirm.
+- **Outbound LEASE URLs were gathered by hand**, because the site returns 403 to automated requests.
+  All but one were supplied directly; the fire safety section index is inferred from the confirmed
+  pattern of its siblings and should be clicked before submission.

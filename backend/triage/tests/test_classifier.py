@@ -10,7 +10,7 @@ not fit their problem, which is worse than admitting we could not tell.
 
 import pytest
 
-from triage.classifier import MINIMUM_LEAD, KeywordClassifier, score_route
+from triage.classifier import MINIMUM_LEAD, KeywordClassifier, matches, normalise, score_route
 from triage.content import ROUTES, ROUTES_BY_ID
 
 classifier = KeywordClassifier()
@@ -102,3 +102,33 @@ def test_no_keyword_is_shared_between_routes() -> None:
     shared = {keyword: routes for keyword, routes in seen.items() if len(routes) > 1}
 
     assert shared == {}
+
+
+@pytest.mark.parametrize(
+    ("keyword", "text"),
+    [
+        ("bill", "the billing system was down"),
+        ("charge", "recharging my car"),
+        ("lift", "shoplifting from the shop"),
+        ("leak", "a leakage report"),
+    ],
+)
+def test_keywords_do_not_match_inside_other_words(keyword: str, text: str) -> None:
+    """Matching used to be a plain substring test, so "bill" hit "billing".
+    Words are matched whole now."""
+    assert matches(keyword, normalise(text)) is False
+
+
+@pytest.mark.parametrize(
+    ("keyword", "text"),
+    [
+        ("charge", "my service charges went up"),
+        ("charge", "they charged me for it"),
+        ("repair", "the repairs were never done"),
+        ("bill", "I was billed twice"),
+    ],
+)
+def test_keywords_still_match_ordinary_endings(keyword: str, text: str) -> None:
+    """People write "charges" and "they charged me", not the dictionary form.
+    Whole-word matching must not cost us those."""
+    assert matches(keyword, normalise(text)) is True

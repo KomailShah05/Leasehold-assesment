@@ -4,7 +4,20 @@ A focused quality pass over the existing build, then an honest look at it.
 
 ## What I changed
 
-Four changes, each fixing something I knew was actually wrong rather than adding polish.
+Six changes, each fixing something actually wrong rather than adding polish.
+
+**Keyword matching was a plain substring test.** `"bill"` matched inside `"billing"`, `"lift"`
+inside `"shoplifting"`. Since the whole safety strategy is *do not route someone confidently and
+wrongly*, that was the weakest link in the classifier. Words are now matched whole, with an
+optional plural or past tense so `"charges"` and `"they charged me"` still match — people write
+those, not the dictionary form. Two of my own tests failed when I made the change, which showed the
+strictness had lowered some genuine scores below the threshold; I fixed the keywords rather than
+lowering the threshold, since the threshold is the safety margin.
+
+**`MINIMUM_SCORE` and `MINIMUM_LEAD` were defined twice**, in `services.py` and `classifier.py`.
+The `services.py` copies were dead after scoring moved, but two constants with the same name and no
+single source of truth is exactly the sort of thing that later drifts apart and changes behaviour
+silently. Removed.
 
 **An over-sized request body escaped as an HTML error page.** Django's own limit fired before my
 validation did, so a large body produced Django's HTML error rather than the JSON shape the client
@@ -29,7 +42,7 @@ title said "Leasehold enquiry triage" throughout. It now names the current quest
 matters most to people who use the title for orientation — screen reader users often hear it when
 returning to a tab, and it is what browser history and tab switching show.
 
-**Three tests were added**, including one I should have written earlier: that nothing a person types
+**Five tests were added**, including one I should have written earlier: that nothing a person types
 is ever echoed back in a response. Everything shown comes from editor-written guidance, so free text
 has no route to the screen; that test holds the door closed, because a future change that reflected
 input would be the first place markup could be injected.
@@ -174,10 +187,27 @@ If this were going in front of real users rather than being a prototype:
 1. **No rate limiting** on an unauthenticated endpoint.
 2. **No real screen reader pass**, on a service whose users are explicitly described as often older
    and non-technical.
-3. **One outbound URL is inferred rather than confirmed** — the fire safety section index. Every
-   other link was supplied directly. A 404 at that moment is a bad failure for a worried person.
+3. **One outbound URL is inferred rather than confirmed** — the fire safety section index,
+   `/building-management/fire-safety/`. It follows the confirmed pattern of its siblings but has not
+   been opened. Every other link was supplied directly. A 404 at that moment is a bad failure for a
+   worried person.
 4. **The fallback links the LEASE home page** rather than a dedicated "get advice" page, despite
-   being the destination for every query the app cannot place.
+   being the destination for every query the app cannot place. It is now the only page in the app
+   still pointing there.
 
 None of those are hard. All of them are the kind of thing that gets left until after launch, which
 is why I would rather name them here.
+
+
+## A note on two things a reviewer will question
+
+**Six routes.** The plan said three. I widened it once real LEASE URLs were available, and the cost
+is a seven-option first screen for a reader the brief describes as often stressed and non-technical.
+I would not add a seventh. If I were starting again I would either hold at three or group them.
+
+**The `Classifier` interface has one implementation.** That is usually a smell, and I would push
+back on it in someone else's PR. I kept it because it is not speculative generality: the interface
+returns a route id and cannot return text, which is what makes "we signpost, we do not advise" a
+structural property rather than a promise about future good behaviour. It is about fifteen lines,
+and it is the reason the answer to "would you use AI here?" can be "yes, for classification, behind
+a boundary that cannot reach the screen". If it had no safety consequence I would have deleted it.
