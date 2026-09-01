@@ -1,20 +1,24 @@
-import FieldError from "./FieldError";
+import type { Ref } from 'react'
+import { useFocusWhen } from '../hooks/useFocusWhen'
+import FieldError from './FieldError'
 
 export type Choice = {
-  id: string;
-  label: string;
+  id: string
+  label: string
   /** A legal phrase or clarification, rendered smaller but inside the label. */
-  hint?: string;
-};
+  hint?: string
+}
 
 type Props = {
-  legend: string;
-  name: string;
-  choices: Choice[];
-  value: string;
-  error?: string | null;
-  onChange: (value: string) => void;
-};
+  legend: string
+  name: string
+  choices: Choice[]
+  value: string
+  error?: string | null
+  onChange: (value: string) => void
+  /** Attached to the legend heading so a step can move focus to its question. */
+  headingRef?: Ref<HTMLHeadingElement>
+}
 
 /**
  * A labelled group of radio buttons.
@@ -24,23 +28,25 @@ type Props = {
  * question uses this, so the markup, hit areas and error wiring cannot drift
  * apart between steps.
  */
-const RadioGroup = ({
-  legend,
-  name,
-  choices,
-  value,
-  error,
-  onChange,
-}: Props) => {
-  const errorId = `${name}-error`;
+const RadioGroup = ({ legend, name, choices, value, error, onChange, headingRef }: Props) => {
+  const errorId = `${name}-error`
+  // Take focus to the message rather than leaving someone at the button they
+  // just pressed, wondering why nothing happened.
+  const errorRef = useFocusWhen<HTMLParagraphElement>(Boolean(error))
 
   return (
     <fieldset aria-describedby={error ? errorId : undefined}>
       <legend>
-        <h2>{legend}</h2>
+        <h2 ref={headingRef} tabIndex={-1}>
+          {legend}
+        </h2>
       </legend>
 
-      {error && <FieldError id={errorId}>{error}</FieldError>}
+      {error && (
+        <FieldError id={errorId} ref={errorRef}>
+          {error}
+        </FieldError>
+      )}
 
       {choices.map((choice) => (
         <div className="choice" key={choice.id}>
@@ -60,7 +66,7 @@ const RadioGroup = ({
                 together as one word. */}
             {choice.hint && (
               <>
-                {" "}
+                {' '}
                 <span className="legal-term">{choice.hint}</span>
               </>
             )}
@@ -68,7 +74,7 @@ const RadioGroup = ({
         </div>
       ))}
     </fieldset>
-  );
-};
+  )
+}
 
-export default RadioGroup;
+export default RadioGroup

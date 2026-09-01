@@ -1,8 +1,8 @@
 type Props = {
-  message: string;
-  busy: boolean;
-  onRetry?: (() => void) | undefined;
-};
+  message: string
+  busy: boolean
+  onRetry?: (() => void) | undefined
+}
 
 /**
  * A failure the person can act on.
@@ -16,10 +16,10 @@ const ErrorAlert = ({ message, busy, onRetry }: Props) => (
     <p>{message}</p>
     {onRetry && (
       <button type="button" onClick={onRetry} disabled={busy}>
-        {busy ? "Trying again…" : "Try again"}
+        {busy ? 'Trying again…' : 'Try again'}
       </button>
     )}
   </div>
-);
+)
 
-export default ErrorAlert;
+export default ErrorAlert

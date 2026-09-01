@@ -54,7 +54,7 @@ legend {
   align-items: flex-start;
   gap: 0.75rem;
   padding: 0.75rem;
-  border: 2px solid #b1b4b6;
+  border: 2px solid #87898b;
   border-radius: 4px;
   margin-bottom: 0.5rem;
 }
@@ -156,7 +156,39 @@ button:disabled {
 .not-advice {
   margin-top: 2rem;
   padding-top: 1rem;
-  border-top: 1px solid #b1b4b6;
+  border-top: 1px solid #87898b;
   font-size: 0.9375rem;
   color: #4d5357;
+}
+
+/* A chosen option should be obvious without reading it, so the whole row
+   changes, not just the small circle. */
+.choice:has(input:checked) {
+  border-color: #0b5cab;
+  background-color: #eef4fa;
+}
+
+/* Focus must not be hidden behind the next row's border (2.4.11 in WCAG 2.2). */
+.choice:focus-within {
+  position: relative;
+  z-index: 1;
+}
+
+/* Respect a system setting for less motion. Nothing here animates today, but
+   this stops that becoming untrue by accident later. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Windows high contrast mode replaces our colours; make sure the chosen row is
+   still distinguishable when it does. */
+@media (forced-colors: active) {
+  .choice:has(input:checked) {
+    border-color: Highlight;
+  }
 }

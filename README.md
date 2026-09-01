@@ -8,9 +8,8 @@ including scope, ordered tickets, risks and deliberate exclusions.
 
 ## Current state
 
-Tickets 1 to 5. The journey works end to end and handles being got wrong: validation, a service
-that is down, and starting over. Focus management, the accessibility audit and tests are still to
-come.
+Tickets 1 to 6. The journey works end to end, handles being got wrong, and has been checked
+against WCAG 2.2 AA by keyboard and by measurement. Tests and the write-up are still to come.
 
 ## What is here
 
@@ -81,10 +80,11 @@ Two things about that content:
 - **It is not LEASE's published wording.** Every summary is original placeholder text written for
   this exercise, phrased as a *possible next step* rather than advice. Each page carries a
   `lease_url` so the app links out and the authoritative guidance stays LEASE's.
-- **`lease_url` is currently the advice guide index**, not a deep link. lease-advice.org blocks
-  automated requests, so I could not verify specific page URLs; guessing at them would risk
-  sending a stressed person to a 404. It is an editor-managed field, which is where that decision
-  belongs anyway.
+- **`lease_url` points at real LEASE section pages** for service charges and repairs, supplied
+  rather than guessed, with tracking parameters stripped. The three lease extension pages still
+  point at the home page because no verified URL for that section was available, and an unchecked
+  deep link risks a 404 at the moment a person least needs one. The field is editor-managed, so
+  LEASE can correct those in Wagtail without a code change.
 
 Every "I'm not sure" answer routes to the adviser page rather than to a best guess. Guessing at
 someone's situation is worse than handing them to a person.
@@ -199,6 +199,38 @@ reads as legal advice, because that is what the question invites, and a worried 
 answer rather than the disclaimer. It would also put an external service in the core flow and send
 free text that may contain personal details to a third party. The classifier boundary gets the
 benefit of a model without any of that.
+
+## Accessibility
+
+Checked by keyboard and by measuring the rendered page, not by eye.
+
+**Focus is moved deliberately, and only twice.** When a step changes, focus goes to the new
+question or result heading, so a keyboard or screen reader user is taken to the content that
+replaced what they were reading instead of being stranded at a button that no longer exists. When
+validation fails, focus goes to the message. It is *not* taken on first load, where stealing focus
+from the top of the page would be wrong.
+
+**Errors are announced once, not twice.** Field errors move focus, which announces them, so they
+are deliberately not `role="alert"` — doing both would read the same message out twice. The API
+error is the reverse: it is `role="alert"` and does not take focus, because the person may be
+mid-sentence in the description box.
+
+**Measured against WCAG 2.2 AA:**
+
+| Check | Result |
+| --- | --- |
+| Text contrast | 6.7:1 to 17.4:1, all above the 4.5:1 minimum |
+| Choice border (1.4.11) | Was **2.08:1 and failing**; darkened to 3.51:1 |
+| Focus ring (1.4.11) | 3px solid, 6.7:1 against the page |
+| Target size (2.5.8) | Smallest interactive target 117x54, above the 24x24 minimum |
+| Keyboard | Tab reaches the group, arrow keys move and select within it, Tab exits to the next field |
+| Reflow | No horizontal scrolling at 375px |
+
+Also handled: `prefers-reduced-motion`, Windows forced-colors mode, and a chosen row that changes
+its whole background rather than relying on the small circle alone.
+
+**Known gap:** this has not been tested with a real screen reader, only against the accessibility
+tree and computed styles. A genuine VoiceOver or NVDA pass is the next thing I would do.
 
 ## Decisions worth knowing
 

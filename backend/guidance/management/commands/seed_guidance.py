@@ -10,15 +10,20 @@ from wagtail.models import Page
 
 from guidance.models import GuidancePage
 
-# Placeholder until an editor sets the specific page. The site blocks automated
-# requests, so no deep path could be verified from here, and an unverified deep
-# link risks sending someone to a 404 at the worst moment. The home page is the
-# one URL certain to resolve; editors replace it per page in Wagtail.
+# Real section URLs on lease-advice.org, supplied rather than guessed. Tracking
+# parameters are stripped: there is no reason to carry someone's referrer into
+# a public service.
+#
+# The lease extension pages still point at the home page, because no verified
+# URL for that section was available and an unchecked deep link risks a 404 at
+# the moment a person least needs one. lease_url is editor-managed, so LEASE can
+# correct those in Wagtail without a code change.
 LEASE_ADVICE_HOME = "https://www.lease-advice.org/"
 
 SAMPLE_GUIDANCE = [
     {
         "guidance_key": "service-charges-understanding",
+        "lease_url": "https://www.lease-advice.org/costs-and-charges/service-charges/about-service-charges/",
         "title": "Understanding a service charge bill",
         "summary": (
             "A possible next step is to ask your landlord or managing agent for a "
@@ -29,6 +34,7 @@ SAMPLE_GUIDANCE = [
     },
     {
         "guidance_key": "service-charges-challenging",
+        "lease_url": "https://www.lease-advice.org/costs-and-charges/service-charges/challenging-service-charges/",
         "title": "Questioning a service charge you think is wrong",
         "summary": (
             "A possible next step is to put your concern in writing to whoever sent "
@@ -66,6 +72,7 @@ SAMPLE_GUIDANCE = [
     },
     {
         "guidance_key": "repairs-inside-your-flat",
+        "lease_url": "https://www.lease-advice.org/building-management/repairs/repairs-and-maintenance-in-leasehold-properties/",
         "title": "Repairs inside your own flat",
         "summary": (
             "Your lease normally divides responsibility between you and your "
@@ -75,6 +82,7 @@ SAMPLE_GUIDANCE = [
     },
     {
         "guidance_key": "repairs-shared-areas",
+        "lease_url": "https://www.lease-advice.org/building-management/repairs/",
         "title": "Repairs to shared parts of a building",
         "summary": (
             "Shared parts such as roofs, hallways and lifts are usually the "
@@ -114,7 +122,7 @@ class Command(BaseCommand):
                 slug=entry["guidance_key"],
                 guidance_key=entry["guidance_key"],
                 summary=entry["summary"],
-                lease_url=LEASE_ADVICE_HOME,
+                lease_url=entry.get("lease_url", LEASE_ADVICE_HOME),
             )
             parent.add_child(instance=page)
             page.save_revision().publish()
