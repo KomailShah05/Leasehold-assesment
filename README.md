@@ -65,7 +65,10 @@ Tests arrive with ticket 7; `pytest` is installed and configured but there is no
 
 ## The content
 
-Three routes — service charges, lease extensions, repairs — plus a fallback for anything else.
+Six routes — service charges, lease extensions, repairs, management problems, right to manage and
+fire safety — plus a fallback for anything else. The plan originally scoped three; the other three
+were added once real LEASE section URLs were available. The cost is a longer first screen, which is
+the main thing to watch if the list grows again.
 
 `backend/triage/content.py` holds **routing only**: the scenarios, the one follow-up question
 each asks, and which `guidance_key` each answer points at. It is plain frozen dataclasses with no
@@ -73,18 +76,22 @@ Django imports, so the taxonomy reads top to bottom in one sitting and can be te
 booting Django.
 
 `guidance.GuidancePage` holds **the words**, in Wagtail, so LEASE editors own them.
-`python manage.py seed_guidance` creates the eight sample pages and is safe to re-run.
+`python manage.py seed_guidance` creates the twenty sample pages and is safe to re-run.
 
 Two things about that content:
 
 - **It is not LEASE's published wording.** Every summary is original placeholder text written for
   this exercise, phrased as a *possible next step* rather than advice. Each page carries a
   `lease_url` so the app links out and the authoritative guidance stays LEASE's.
-- **`lease_url` points at real LEASE section pages** for service charges and repairs, supplied
-  rather than guessed, with tracking parameters stripped. The three lease extension pages still
-  point at the home page because no verified URL for that section was available, and an unchecked
-  deep link risks a 404 at the moment a person least needs one. The field is editor-managed, so
-  LEASE can correct those in Wagtail without a code change.
+- **`lease_url` points at real LEASE section pages**, supplied rather than guessed, with tracking
+  parameters stripped. lease-advice.org returns 403 to every automated request, so no URL here was
+  discovered by crawling. The three lease extension pages still point at the home page because no
+  verified URL for that section was available, and an unchecked deep link risks a 404 at the moment
+  a person least needs one. The field is editor-managed, so LEASE can correct those in Wagtail
+  without a code change.
+- **No LEASE wording is reproduced.** Every summary is original text written for this exercise and
+  phrased as a possible next step. Their published guidance is both copyrighted and authoritative;
+  copying it in would turn signposting into advice.
 
 Every "I'm not sure" answer routes to the adviser page rather than to a best guess. Guessing at
 someone's situation is worse than handing them to a person.

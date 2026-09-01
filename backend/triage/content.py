@@ -90,6 +90,11 @@ SERVICE_CHARGES = Route(
                 guidance_key="service-charges-challenging",
             ),
             Answer(
+                id="struggling_to_pay",
+                label="I am struggling to pay what I have been asked for",
+                guidance_key="service-charges-if-you-do-not-pay",
+            ),
+            Answer(
                 id="unsure",
                 label="I am not sure yet",
                 guidance_key=ADVISER_GUIDANCE_KEY,
@@ -172,6 +177,16 @@ REPAIRS = Route(
                 guidance_key="repairs-shared-areas",
             ),
             Answer(
+                id="water_leak",
+                label="Water is leaking into my home",
+                guidance_key="repairs-water-leaks",
+            ),
+            Answer(
+                id="reported_not_fixed",
+                label="I have reported it and nothing has been done",
+                guidance_key="repairs-not-being-fixed",
+            ),
+            Answer(
                 id="unsure",
                 label="I am not sure",
                 guidance_key=ADVISER_GUIDANCE_KEY,
@@ -180,8 +195,149 @@ REPAIRS = Route(
     ),
 )
 
+RIGHT_TO_MANAGE = Route(
+    id="right_to_manage",
+    label="I want to know about taking over the management of my building",
+    legal_term="Right to Manage",
+    # Deliberately no bare "management": it appears in "management fee", which
+    # belongs to service charges, and a shared word would push both routes to
+    # the fallback instead of either of them.
+    keywords=(
+        "right to manage",
+        "rtm",
+        "take over the management",
+        "manage the building ourselves",
+        "manage our own building",
+        "resident management company",
+    ),
+    question=Question(
+        id="right_to_manage_stage",
+        text="Where are you up to?",
+        answers=(
+            Answer(
+                id="what_is_it",
+                label="I want to understand what it is and whether we qualify",
+                guidance_key="right-to-manage-about",
+            ),
+            Answer(
+                id="setting_up",
+                label="We are trying to set one up",
+                guidance_key="right-to-manage-setting-up",
+            ),
+            Answer(
+                id="running",
+                label="We already have one and I have a question about running it",
+                guidance_key="right-to-manage-running",
+            ),
+            Answer(
+                id="unsure",
+                label="I am not sure",
+                guidance_key=ADVISER_GUIDANCE_KEY,
+            ),
+        ),
+    ),
+)
+
+FIRE_SAFETY = Route(
+    id="fire_safety",
+    label="I have a concern about fire safety in my building",
+    legal_term="Fire safety, risk assessments and safety measures",
+    # Not a bare "fire", which would match "fireplace" and "fired".
+    keywords=(
+        "fire safety",
+        "fire risk",
+        "fire door",
+        "fire alarm",
+        "smoke alarm",
+        "cladding",
+        "waking watch",
+        "sprinkler",
+        "evacuation",
+    ),
+    question=Question(
+        id="fire_safety_concern",
+        text="What is your concern about?",
+        answers=(
+            Answer(
+                id="risk_assessment",
+                label="Whether the building has been assessed properly",
+                guidance_key="fire-safety-risk-assessments",
+            ),
+            Answer(
+                id="measures",
+                label="The safety measures in the building itself",
+                guidance_key="fire-safety-measures",
+            ),
+            Answer(
+                id="director",
+                label="My own duties as a director of the company that runs the building",
+                guidance_key="fire-safety-directors",
+            ),
+            Answer(
+                id="unsure",
+                label="I am not sure",
+                guidance_key=ADVISER_GUIDANCE_KEY,
+            ),
+        ),
+    ),
+)
+
+MANAGEMENT_PROBLEMS = Route(
+    id="management_problems",
+    label="I am having problems with whoever manages my building",
+    legal_term="Management problems, appointing a manager and tribunals",
+    # "landlord" and "freeholder" are left out on purpose: they turn up in
+    # almost every description, including ones that belong elsewhere.
+    keywords=(
+        "managing agent",
+        "management company",
+        "appoint a manager",
+        "poor management",
+        "badly managed",
+        "not responding",
+        "ignoring me",
+        "will not reply",
+        "tribunal",
+        "solicitor",
+    ),
+    question=Question(
+        id="management_problems_focus",
+        text="What would you most like help with?",
+        answers=(
+            Answer(
+                id="problems",
+                label="Understanding what I can do about poor management",
+                guidance_key="management-problems",
+            ),
+            Answer(
+                id="appoint_manager",
+                label="Having a different manager put in place",
+                guidance_key="management-appoint-a-manager",
+            ),
+            Answer(
+                id="tribunal",
+                label="Taking the matter to a tribunal",
+                guidance_key="disputes-tribunal",
+            ),
+            Answer(
+                id="unsure",
+                label="I am not sure",
+                guidance_key=ADVISER_GUIDANCE_KEY,
+            ),
+        ),
+    ),
+)
+
+
 # Order matters: this is the order the radio buttons appear in.
-ROUTES: tuple[Route, ...] = (SERVICE_CHARGES, LEASE_EXTENSIONS, REPAIRS)
+ROUTES: tuple[Route, ...] = (
+    SERVICE_CHARGES,
+    LEASE_EXTENSIONS,
+    REPAIRS,
+    MANAGEMENT_PROBLEMS,
+    RIGHT_TO_MANAGE,
+    FIRE_SAFETY,
+)
 
 ROUTES_BY_ID: dict[str, Route] = {route.id: route for route in ROUTES}
 

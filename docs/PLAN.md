@@ -15,6 +15,7 @@ For the first version, useful means that a person can complete the journey witho
 ## Scope and assumptions
 
 - The prototype will cover three common routes: **service charges**, **lease extensions**, and **repairs**. A person whose issue does not fit one of these routes will see a clear fallback and be invited to choose a scenario instead.
+- *Revised during build:* three further routes were added once real LEASE section URLs were available — **management problems**, **right to manage** and **fire safety** — taking the total to six. The fallback still covers anything outside them. This widens the original scope deliberately; the trade-off is a longer first screen and more surface to test.
 - The triage is a small, deterministic set of rules. It may match simple words in free text, but it will not try to interpret every possible situation.
 - The result is signposting, not legal advice. It will use carefully written dummy guidance and make that boundary clear.
 - The interface will be built with React and TypeScript. A small Django API will hold the route and outcome data. Wagtail will be introduced only for managing guidance content, reflecting LEASE's production stack without turning the exercise into a CMS project.
