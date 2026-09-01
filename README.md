@@ -8,8 +8,8 @@ including scope, ordered tickets, risks and deliberate exclusions.
 
 ## Current state
 
-Tickets 1 and 2. The app boots, the React frontend can reach the Django API, and the routes and
-sample guidance content exist. The triage API and the user journey are not built yet.
+Tickets 1 to 3. The routes, the sample guidance content and the triage API exist and are
+working. The React user journey is not built yet, so the API is currently exercised with curl.
 
 ## What is here
 
@@ -87,6 +87,45 @@ Two things about that content:
 
 Every "I'm not sure" answer routes to the adviser page rather than to a best guess. Guessing at
 someone's situation is worse than handing them to a person.
+
+## The API
+
+Two endpoints, both under `/api/`.
+
+`GET /api/triage/routes/` returns the scenario options, so the React app never hardcodes copy.
+"I am not sure" comes back in the same list, because it belongs in the same radio group.
+
+`POST /api/triage/` takes `scenario`, `description` and `answerId`, all optional, and returns one
+of three shapes distinguished by `status`:
+
+- `question` — we have a route and need one follow-up answer
+- `outcome` — a possible next step, with guidance from Wagtail
+- `fallback` — we could not place the problem, so here is a route to a person
+
+Clients switch on `status`. There are no nullable fields to probe.
+
+### How a route is decided
+
+`backend/triage/services.py` holds the rules as pure functions with no Django imports, so they can
+be tested without a database.
+
+A chosen scenario always wins: if someone has told us what their problem is about, we do not
+second-guess them. Free text is scored against each route's keywords, where longer phrases count
+for more than single words — "lease extension" is evidence, "lease" alone is not, since nearly
+every visitor will type it.
+
+We refuse to name a route in three separate situations, all of which go to the fallback: nothing
+matched, the best match was too weak (`MINIMUM_SCORE`), or two routes were too close to separate
+(`MINIMUM_LEAD`). A tie is never broken by picking the first one.
+
+When a route is *inferred* from free text rather than chosen, its follow-up question gains one
+extra answer — "This is not what my problem is about" — which goes to the fallback. So a wrong
+guess costs one click to correct, and correcting us takes the same effort as agreeing with us.
+That is why there is no separate "did we get this right?" screen: it would add a step for someone
+who is already stressed.
+
+Also fallback, not an error: an unknown scenario, and an outcome whose guidance page is missing or
+unpublished. Someone seeing the fallback is already having a bad day; a 500 would not help.
 
 ## Decisions worth knowing
 

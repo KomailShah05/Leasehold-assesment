@@ -17,6 +17,7 @@ urlpatterns = [
     path("admin/", include(wagtailadmin_urls)),
     path("documents/", include(wagtaildocs_urls)),
     path("api/health/", health, name="health"),
+    path("api/", include("triage.urls")),
 ]
 
 if settings.DEBUG:
