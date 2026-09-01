@@ -85,19 +85,30 @@ def test_a_chosen_route_does_not_offer_that_option() -> None:
     assert services.REJECT_ROUTE_ANSWER.id not in answer_ids
 
 
-def test_every_i_am_not_sure_answer_leads_to_an_adviser() -> None:
-    """Uncertainty inside a route must never resolve to a confident outcome."""
-    from triage.content import ADVISER_GUIDANCE_KEY, ROUTES
+def test_every_i_am_not_sure_answer_leads_to_that_route_s_overview() -> None:
+    """Uncertainty inside a route must not resolve to a confident specific
+    outcome. Each "I am not sure" leads to the route's overview instead, and a
+    separate test checks that those pages still point at a human."""
+    from triage.content import ROUTES
 
     unsure = [
-        answer
+        (route, answer)
         for route in ROUTES
         for answer in route.question.answers
-        if answer.id in {"unsure", "not_sure"}
+        if answer.id == "unsure"
     ]
 
     assert unsure, "expected an 'I am not sure' answer on the routes"
-    assert all(answer.guidance_key == ADVISER_GUIDANCE_KEY for answer in unsure)
+    assert all(answer.guidance_key.endswith("-overview") for _, answer in unsure)
+    # Each route gets its own, rather than all of them sharing one page.
+    assert len({answer.guidance_key for _, answer in unsure}) == len(unsure)
+
+
+def test_the_fallback_still_goes_to_an_adviser() -> None:
+    """Whatever happens inside a route, being unplaceable still means a person."""
+    from triage.content import ADVISER_GUIDANCE_KEY, FALLBACK_GUIDANCE_KEY
+
+    assert FALLBACK_GUIDANCE_KEY == ADVISER_GUIDANCE_KEY
 
 
 def test_an_answer_we_did_not_offer_is_rejected() -> None:

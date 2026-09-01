@@ -99,8 +99,16 @@ Two things about that content:
   phrased as a possible next step. Their published guidance is both copyrighted and authoritative;
   copying it in would turn signposting into advice.
 
-Every "I'm not sure" answer routes to the adviser page rather than to a best guess. Guessing at
-someone's situation is worse than handing them to a person.
+Every "I'm not sure" answer routes to that route's own overview page rather than to a best guess
+at a specific outcome, and each of those pages still names an adviser as a next step. The fallback
+itself still goes straight to the adviser. `test_every_unsure_page_still_offers_a_person` guards
+the wording, because that is the part this change could quietly lose.
+
+**Three URLs are inferred rather than confirmed.** The overview pages for building management,
+right to manage and fire safety follow the `/building-management/<section>/` pattern of the repairs
+index, which is confirmed, but lease-advice.org returns 403 to every automated request so I could
+not open them. They need one click each to verify. The three lease extension pages still point at
+the home page because no URL for that section was available at all.
 
 ## The API
 

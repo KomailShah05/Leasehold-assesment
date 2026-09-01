@@ -97,7 +97,7 @@ SERVICE_CHARGES = Route(
             Answer(
                 id="unsure",
                 label="I am not sure yet",
-                guidance_key=ADVISER_GUIDANCE_KEY,
+                guidance_key="service-charges-overview",
             ),
         ),
     ),
@@ -118,6 +118,8 @@ LEASE_EXTENSIONS = Route(
         "freeholder",
         "premium",
         "renew my lease",
+        "leasehold reform",
+        "marriage value",
     ),
     question=Question(
         id="lease_extensions_term",
@@ -135,8 +137,13 @@ LEASE_EXTENSIONS = Route(
             ),
             Answer(
                 id="unknown",
-                label="I do not know",
+                label="I do not know how long is left",
                 guidance_key="lease-extension-checking-your-lease",
+            ),
+            Answer(
+                id="reforms",
+                label="I have heard the rules are changing and want to know what that means",
+                guidance_key="lease-extension-reforms",
             ),
         ),
     ),
@@ -189,7 +196,7 @@ REPAIRS = Route(
             Answer(
                 id="unsure",
                 label="I am not sure",
-                guidance_key=ADVISER_GUIDANCE_KEY,
+                guidance_key="repairs-overview",
             ),
         ),
     ),
@@ -232,7 +239,7 @@ RIGHT_TO_MANAGE = Route(
             Answer(
                 id="unsure",
                 label="I am not sure",
-                guidance_key=ADVISER_GUIDANCE_KEY,
+                guidance_key="right-to-manage-overview",
             ),
         ),
     ),
@@ -253,6 +260,8 @@ FIRE_SAFETY = Route(
         "waking watch",
         "sprinkler",
         "evacuation",
+        "remediation",
+        "who pays for the fire",
     ),
     question=Question(
         id="fire_safety_concern",
@@ -269,6 +278,16 @@ FIRE_SAFETY = Route(
                 guidance_key="fire-safety-measures",
             ),
             Answer(
+                id="who_pays",
+                label="Who has to pay for putting fire safety problems right",
+                guidance_key="fire-safety-who-pays",
+            ),
+            Answer(
+                id="selling",
+                label="Selling or remortgaging a flat with fire safety issues",
+                guidance_key="fire-safety-selling",
+            ),
+            Answer(
                 id="director",
                 label="My own duties as a director of the company that runs the building",
                 guidance_key="fire-safety-directors",
@@ -276,7 +295,7 @@ FIRE_SAFETY = Route(
             Answer(
                 id="unsure",
                 label="I am not sure",
-                guidance_key=ADVISER_GUIDANCE_KEY,
+                guidance_key="fire-safety-overview",
             ),
         ),
     ),
@@ -299,11 +318,18 @@ MANAGEMENT_PROBLEMS = Route(
         "will not reply",
         "tribunal",
         "solicitor",
+        "how my building is managed",
+        "property manager",
     ),
     question=Question(
         id="management_problems_focus",
         text="What would you most like help with?",
         answers=(
+            Answer(
+                id="how_it_works",
+                label="Understanding how my building is supposed to be managed",
+                guidance_key="management-how-it-works",
+            ),
             Answer(
                 id="problems",
                 label="Understanding what I can do about poor management",
@@ -322,7 +348,7 @@ MANAGEMENT_PROBLEMS = Route(
             Answer(
                 id="unsure",
                 label="I am not sure",
-                guidance_key=ADVISER_GUIDANCE_KEY,
+                guidance_key="management-overview",
             ),
         ),
     ),

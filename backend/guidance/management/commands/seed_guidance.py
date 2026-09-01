@@ -44,30 +44,32 @@ SAMPLE_GUIDANCE = [
     },
     {
         "guidance_key": "lease-extension-more-than-80-years",
+        "lease_url": "https://www.lease-advice.org/lease-extension/flats/informal-route/",
         "title": "Extending a lease with more than 80 years left",
         "summary": (
-            "With a longer lease there is usually less urgency, so a possible next "
-            "step is to read up on how extensions work before approaching anyone. "
-            "Costs tend to rise as a lease gets shorter, so it is worth knowing "
-            "your timing."
+            "With more time in hand there is usually room to look at both ways of "
+            "extending. This covers the informal route, where terms are agreed "
+            "directly; the formal route works differently and has its own page."
         ),
     },
     {
         "guidance_key": "lease-extension-80-years-or-fewer",
+        "lease_url": "https://www.lease-advice.org/lease-extension/flats/formal-route/",
         "title": "Extending a lease with 80 years or fewer left",
         "summary": (
-            "Shorter leases usually cost more to extend, and the 80-year mark "
-            "matters. A possible next step is to get advice early rather than "
-            "waiting, so you understand the likely cost and the steps involved."
+            "The formal route follows steps set out in law and gives you rights a "
+            "private agreement does not. Timing matters more as a lease shortens, "
+            "so a possible next step is to read how that process runs."
         ),
     },
     {
         "guidance_key": "lease-extension-checking-your-lease",
+        "lease_url": "https://www.lease-advice.org/lease-extension/flats/getting-started/",
         "title": "Finding out how long is left on your lease",
         "summary": (
-            "A possible next step is to check your own copy of the lease, which "
-            "gives a start date and a length. If you cannot find it, the Land "
-            "Registry holds a copy of most registered leases."
+            "Your own copy of the lease gives a start date and a length, and the "
+            "Land Registry holds a copy of most registered leases. A possible next "
+            "step is to start there, before working out which route suits you."
         ),
     },
     {
@@ -82,7 +84,7 @@ SAMPLE_GUIDANCE = [
     },
     {
         "guidance_key": "repairs-shared-areas",
-        "lease_url": "https://www.lease-advice.org/building-management/repairs/",
+        "lease_url": "https://www.lease-advice.org/building-management/repairs/repairs-and-maintenance-in-leasehold-properties/",
         "title": "Repairs to shared parts of a building",
         "summary": (
             "Shared parts such as roofs, hallways and lifts are usually the "
@@ -211,6 +213,97 @@ SAMPLE_GUIDANCE = [
             "Directors of a company that runs a building carry duties of their own "
             "for fire safety. A possible next step is to check what is expected of "
             "you in that role."
+        ),
+    },
+    {
+        "guidance_key": "service-charges-overview",
+        "lease_url": "https://www.lease-advice.org/costs-and-charges/service-charges/",
+        "title": "Service charges: where to start",
+        "summary": (
+            "If you are not sure yet what you need, the overview of service "
+            "charges is a reasonable place to begin. Speaking to an adviser is "
+            "also a sensible next step, and costs nothing."
+        ),
+    },
+    {
+        "guidance_key": "repairs-overview",
+        "lease_url": "https://www.lease-advice.org/building-management/repairs/",
+        "title": "Repairs: where to start",
+        "summary": (
+            "If you are not sure which part of the problem to tackle first, the "
+            "repairs overview covers how responsibility is usually divided. "
+            "Speaking to an adviser is also a sensible next step."
+        ),
+    },
+    {
+        "guidance_key": "management-overview",
+        "lease_url": "https://www.lease-advice.org/building-management/management/",
+        "title": "Building management: where to start",
+        "summary": (
+            "If you are not sure what kind of management problem you have, the "
+            "overview sets out what leaseholders can usually expect. Speaking to "
+            "an adviser is also a sensible next step."
+        ),
+    },
+    {
+        "guidance_key": "right-to-manage-overview",
+        "lease_url": "https://www.lease-advice.org/building-management/right-to-manage/",
+        "title": "Right to Manage: where to start",
+        "summary": (
+            "If you are not sure where you are up to, the Right to Manage overview "
+            "explains the whole process from the beginning. Speaking to an adviser "
+            "is also a sensible next step."
+        ),
+    },
+    {
+        "guidance_key": "fire-safety-overview",
+        "lease_url": "https://www.lease-advice.org/building-management/fire-safety/",
+        "title": "Fire safety: where to start",
+        "summary": (
+            "If you are not sure which part of fire safety your concern falls "
+            "under, the overview covers the main duties and who holds them. "
+            "Speaking to an adviser is also a sensible next step."
+        ),
+    },
+    {
+        "guidance_key": "fire-safety-who-pays",
+        "lease_url": "https://www.lease-advice.org/building-management/fire-safety/leaseholder-protections/",
+        "title": "Who pays for fire safety work",
+        "summary": (
+            "There are protections that limit what leaseholders can be charged for "
+            "some fire safety problems, and they depend on the building and when "
+            "the work is needed. A possible next step is to check which apply to "
+            "you before agreeing to pay anything."
+        ),
+    },
+    {
+        "guidance_key": "fire-safety-selling",
+        "lease_url": "https://www.lease-advice.org/building-management/fire-safety/selling-or-remortgaging-a-flat-with-fire-safety-issues/",
+        "title": "Selling or remortgaging with fire safety issues",
+        "summary": (
+            "Fire safety problems can affect a sale or a mortgage, and buyers and "
+            "lenders often ask for specific paperwork. A possible next step is to "
+            "find out which documents your building should be able to provide."
+        ),
+    },
+    {
+        "guidance_key": "management-how-it-works",
+        "lease_url": "https://www.lease-advice.org/building-management/management/how-leasehold-properties-are-managed/",
+        "title": "How leasehold buildings are managed",
+        "summary": (
+            "Knowing who is supposed to do what, and where that comes from in your "
+            "lease, makes it much easier to say when something has gone wrong. A "
+            "possible next step is to read how the arrangement normally works."
+        ),
+    },
+    {
+        "guidance_key": "lease-extension-reforms",
+        "lease_url": "https://www.lease-advice.org/lease-extension/leasehold-reforms/",
+        "title": "Changes to the lease extension rules",
+        "summary": (
+            "The law in this area has been changing, and some changes affect what "
+            "an extension costs and who can ask for one. A possible next step is to "
+            "check what has actually come into force before deciding when to act."
         ),
     },
     {

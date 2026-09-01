@@ -160,3 +160,17 @@ def test_every_route_can_be_completed(client: Client, guidance: None) -> None:
             assert response.status_code == 200, f"{route.id}/{answer.id}"
             assert body["status"] in {"outcome", "fallback"}, f"{route.id}/{answer.id}"
             assert body["guidance"] is not None, f"{route.id}/{answer.id} has no guidance"
+
+
+def test_every_unsure_page_still_offers_a_person(client: Client, guidance: None) -> None:
+    """Sending "I am not sure" to a topic overview rather than straight to the
+    adviser is only safe while those overviews still name a human route. This
+    guards the wording, which is the part that change would quietly lose."""
+    from triage.content import ROUTES
+
+    for route in ROUTES:
+        for answer in route.question.answers:
+            if answer.id != "unsure":
+                continue
+            page = GuidancePage.objects.get(guidance_key=answer.guidance_key)
+            assert "adviser" in page.summary.lower(), f"{route.id} overview drops the adviser"
