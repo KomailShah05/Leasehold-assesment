@@ -1,6 +1,6 @@
 # Leasehold enquiry triage — plan
 
-**Komail Shah · 31 August 2026**
+**Syed Komail Bukhari · 31 August 2026**
 
 ## The problem we are solving
 

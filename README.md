@@ -103,7 +103,7 @@ backend and 14 frontend.
 * **Accessibility:** semantic HTML, keyboard support, focus management, clear errors and
   WCAG-focused checks.
 
-## Deliberately left out
+## Scope and limitations
 
 This is a prototype, not a production advice service. It does not include authentication, saved
 enquiries, analytics, deployment infrastructure, or a full CMS.
@@ -113,4 +113,4 @@ screen is a known trade-off and is documented in [Part 3](docs/PART-3-REVIEW.md)
 
 See [docs/PART-3-REVIEW.md](docs/PART-3-REVIEW.md) for known gaps and what I would improve next.
 
-**Komail Shah — 1 September 2026**
+**Syed Komail Bukhari — 1 September 2026**
