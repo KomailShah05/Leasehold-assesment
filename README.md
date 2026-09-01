@@ -8,8 +8,8 @@ including scope, ordered tickets, risks and deliberate exclusions.
 
 ## Current state
 
-Tickets 1 to 6. The journey works end to end, handles being got wrong, and has been checked
-against WCAG 2.2 AA by keyboard and by measurement. Tests and the write-up are still to come.
+Tickets 1 to 7. The journey works end to end, handles being got wrong, has been checked against
+WCAG 2.2 AA, and is covered by 66 tests. The write-up is still to come.
 
 ## What is here
 
@@ -61,7 +61,13 @@ cd backend && .venv/bin/ruff check . && .venv/bin/ruff format --check .
 cd frontend && npm run build && npm run lint
 ```
 
-Tests arrive with ticket 7; `pytest` is installed and configured but there is nothing to run yet.
+```bash
+cd backend && .venv/bin/python -m pytest -q
+```
+
+```bash
+cd frontend && npm test
+```
 
 ## The content
 
@@ -238,6 +244,37 @@ its whole background rather than relying on the small circle alone.
 
 **Known gap:** this has not been tested with a real screen reader, only against the accessibility
 tree and computed styles. A genuine VoiceOver or NVDA pass is the next thing I would do.
+
+## Tests
+
+52 backend, 14 frontend.
+
+**The highest-risk behaviour is the fallback failing to fire**, because a confidently wrong route
+sends someone who is already worried down a path that does not fit their problem. So the tests
+concentrate on the cases where we should *refuse* to answer: nothing matched, the match was too
+weak, two routes fit equally well, the person said we guessed wrong, the guidance page is missing.
+Each of those is asserted to end in the fallback rather than an outcome or an error.
+
+`test_no_keyword_is_shared_between_routes` guards the taxonomy itself. A word appearing in two
+routes would make them tie, and ties go to the fallback — so a careless keyword addition would
+quietly make triage *worse* as it grew. That failure would be invisible without this test.
+
+**The tests were checked against deliberately broken code**, since a test that cannot fail is
+decoration:
+
+| Bug reintroduced | Caught by |
+| --- | --- |
+| Escape hatch returning an outcome instead of the fallback | 1 test |
+| Ambiguity guard removed, so near ties pick a winner | 2 tests |
+
+The frontend tests drive the real components through the DOM, querying by role and label the way a
+person or a screen reader finds things, with only the network faked. If a query there stops finding
+a control, someone using assistive technology has probably lost it too. One test asserts focus
+actually lands on the error message, because that is behaviour, not decoration.
+
+Not covered: no real screen reader pass, and no browser-level end-to-end run — the journey test
+uses jsdom rather than a real browser. Both are judgement calls about time, recorded rather than
+implied.
 
 ## Decisions worth knowing
 
