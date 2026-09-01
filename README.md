@@ -177,6 +177,29 @@ attention.
 
 **Starting again clears everything** — the result, the errors and the retained request.
 
+## Where a language model could fit, and where it must not
+
+Triage is deterministic. Picking a category is the one part a model could plausibly do better, so
+it sits behind a `Classifier` interface in `backend/triage/classifier.py`. `KeywordClassifier` is
+what ships; `match_route` takes any implementation as an argument, so a model-backed one could be
+swapped in without touching the questions, the guidance or the fallback.
+
+**The interface is deliberately narrow: a classifier returns a route id or `None`. It cannot
+return text.** No implementation of it, model-backed or otherwise, can put words in front of a
+person that an editor has not approved. That is what keeps "we signpost, we do not advise" true
+regardless of what is plugged in.
+
+Returning `None` is a real answer rather than a failure, so any classifier must be willing to give
+it. And a chosen scenario always overrides the classifier: if someone has told us what their
+problem is about, nothing gets to second-guess them.
+
+I decided against having a model **write** the guidance a person reads, even labelled as an AI
+suggestion. A model asked what someone should do about their lease will produce something that
+reads as legal advice, because that is what the question invites, and a worried person reads the
+answer rather than the disclaimer. It would also put an external service in the core flow and send
+free text that may contain personal details to a third party. The classifier boundary gets the
+benefit of a model without any of that.
+
 ## Decisions worth knowing
 
 - **Two runtime frontend dependencies**, `react` and `react-dom`. No router, no data-fetching

@@ -5,6 +5,10 @@ can explain, reproduce and test; a model that is usually right is worse here
 than a rule that is always the same. There is no external API call in this
 path, so the journey cannot fail because a third party is down.
 
+Picking a category is the one part that could sensibly be done by a model, so
+it lives behind the ``Classifier`` interface in ``triage.classifier``. What is
+asked, what is shown and when we give up are decided here and stay fixed.
+
 Pure functions with no Django imports, so every rule below can be tested
 without a database or a running server. The view layer turns these results
 into JSON and looks up the guidance wording.
@@ -15,10 +19,10 @@ would rather admit it than send someone confidently down the wrong route.
 
 from dataclasses import dataclass
 
+from triage.classifier import DEFAULT_CLASSIFIER, Classifier
 from triage.content import (
     ADVISER_GUIDANCE_KEY,
     NOT_SURE_OPTION_ID,
-    ROUTES,
     ROUTES_BY_ID,
     Answer,
     Question,
@@ -54,54 +58,19 @@ class RouteMatch:
     chosen_by_person: bool
 
 
-def normalise(text: str) -> str:
-    """Lower-case and collapse whitespace, so matching is not tripped by typing."""
-    return " ".join(text.lower().split())
-
-
-def score_route(text: str, route: Route) -> int:
-    """How strongly a description points at one route.
-
-    Longer keyword phrases count for more than single words, because "lease
-    extension" is real evidence and "lease" on its own is not: almost every
-    person using this service will write the word "lease" at some point.
-    """
-    normalised = normalise(text)
-    return sum(len(keyword.split()) for keyword in route.keywords if keyword in normalised)
-
-
-def classify(text: str) -> Route | None:
-    """Pick the route a description points at, or None if we cannot tell.
-
-    Returns None in three separate situations, all of which lead to the
-    fallback: nothing matched, the best match was too weak to trust, or two
-    routes were close enough that choosing between them would be a guess.
-    """
-    if not text.strip():
-        return None
-
-    scores = sorted(
-        ((route, score_route(text, route)) for route in ROUTES),
-        key=lambda pair: pair[1],
-        reverse=True,
-    )
-
-    best_route, best_score = scores[0]
-    runner_up_score = scores[1][1] if len(scores) > 1 else 0
-
-    if best_score < MINIMUM_SCORE:
-        return None
-    if best_score - runner_up_score < MINIMUM_LEAD:
-        return None
-    return best_route
-
-
-def match_route(scenario: str | None, description: str | None) -> RouteMatch | None:
+def match_route(
+    scenario: str | None,
+    description: str | None,
+    classifier: Classifier = DEFAULT_CLASSIFIER,
+) -> RouteMatch | None:
     """Work out which route to offer, from a chosen scenario or a description.
 
     A chosen scenario always wins: if someone has told us what their problem is
-    about, we do not second-guess them with keyword matching. Choosing "I am not
+    about, we do not second-guess them with a classifier. Choosing "I am not
     sure" is an answer in itself and goes to the fallback.
+
+    The classifier is an argument so a test can supply its own, and so a
+    model-backed one could be swapped in without touching anything else.
     """
     if scenario == NOT_SURE_OPTION_ID:
         return None
@@ -113,7 +82,8 @@ def match_route(scenario: str | None, description: str | None) -> RouteMatch | N
     if description is None:
         return None
 
-    inferred = classify(description)
+    route_id = classifier.classify(description)
+    inferred = ROUTES_BY_ID.get(route_id) if route_id else None
     return RouteMatch(route=inferred, chosen_by_person=False) if inferred else None
 
 
